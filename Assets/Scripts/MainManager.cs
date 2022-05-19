@@ -12,20 +12,25 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
-    
+
     private bool m_Started = false;
     private int m_Points;
-    
-    private bool m_GameOver = false;
 
-    
+    private bool m_GameOver = false;
+    public Text yourScore;
+    public Text highScores;
+
+    public GameObject HighScoreField;
+    public GameObject HighScoreText;
+    public GameObject ScoreTable;
+
     // Start is called before the first frame update
     void Start()
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        int[] pointCountArray = new[] { 1, 1, 2, 2, 5, 5 };
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -36,6 +41,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+
     }
 
     private void Update()
@@ -65,12 +72,35 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = m_Points + "    " + DataManager.Instance.playerName;
     }
 
     public void GameOver()
     {
         m_GameOver = true;
+        ScoreTable.SetActive(true);
+
+        // add score to high scores
+        string playerName = DataManager.Instance.playerName;
+        DataManager.Instance.highscoreEntryList.Add(new HighScoreEntry { player = playerName, score = m_Points });
+
+
+        // save updated score list
+        DataManager.Instance.SaveScores(DataManager.Instance.highscoreEntryList);
+
+        // display score
+        yourScore.text = m_Points + "    " + DataManager.Instance.playerName;
+
+        // display score list
+        DataManager.Instance.SortScores();
+        HighScoreTable.Instance.PrintScores();
+
         GameOverText.SetActive(true);
+        HighScoreField.SetActive(true);
+        HighScoreText.SetActive(true);
+        foreach (GameObject i in GameObject.FindGameObjectsWithTag("Brick"))
+        {
+            i.SetActive(false);
+        }
     }
 }
