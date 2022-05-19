@@ -9,7 +9,7 @@ public class HighScoreEntry : System.IComparable<HighScoreEntry>
     public string player;
 
     public int CompareTo(HighScoreEntry item)
-    {       // A null value means that this object is greater.
+    {       
         if (item == null)
         {
             return 1;

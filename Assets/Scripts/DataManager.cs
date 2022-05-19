@@ -9,7 +9,7 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
 
-    public string playerName; // new variable declared
+    public string playerName;
 
     public InputField Field;
 
@@ -19,12 +19,6 @@ public class DataManager : MonoBehaviour
 
     private string jsonString;
 
-
-    [System.Serializable]
-    public class SaveData
-    {
-        public List<HighScoreEntry> data;
-    }
 
     private void Awake()
     {
@@ -37,26 +31,7 @@ public class DataManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        highscoreEntryList = new List<HighScoreEntry>()
-        {
-            new HighScoreEntry{score = 1, player = "A"},
-            new HighScoreEntry{score = 2, player = "B"},
-            new HighScoreEntry{score = 3, player = "A"}
-        };
         highscoreEntryList = LoadScores();
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void NewName()
@@ -69,11 +44,6 @@ public class DataManager : MonoBehaviour
 
     public void SaveScores(List<HighScoreEntry> list)
     {
-        //SaveData data = new SaveData();
-        //for (int i = 0; i < list.Count; i++)
-        //{
-        //    data.data.Add(list[i]);
-        //}
         string json = JsonConvert.SerializeObject(list);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
         highscoreEntryList = list;
@@ -86,11 +56,6 @@ public class DataManager : MonoBehaviour
         {
             jsonString = File.ReadAllText(path); // read the json file from the file system
             List<HighScoreEntry> myData = JsonConvert.DeserializeObject<List<HighScoreEntry>>(jsonString); // de-serialize the data to your myData object
-            // SaveData data = JsonUtility.FromJson<SaveData>(jsonString);
-            //for (int i = 0; i < Transforms.Count; i++)
-            // {
-            //     Transforms[i].localPosition = data.data[i];
-            // }
             return myData;
 
         }
@@ -118,18 +83,6 @@ public class DataManager : MonoBehaviour
 
     public void SortScores()
     {
-        //for (int i = 0; i < highscoreEntryList.Count; i++)
-        //{
-        //    for (int j = 0; j < highscoreEntryList.Count; j++)
-        //    {
-        //        if (highscoreEntryList[j].score > highscoreEntryList[i].score)
-        //        {
-        //            HighScoreEntry tmp = highscoreEntryList[i];
-        //            highscoreEntryList[i] = highscoreEntryList[j];
-        //            highscoreEntryList[j] = tmp;
-        //        }
-        //    }
-        //}
         highscoreEntryList.Sort();
         highscoreEntryList.Reverse();
     }
